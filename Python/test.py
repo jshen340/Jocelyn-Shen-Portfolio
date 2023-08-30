@@ -1,17 +1,24 @@
 import login # Access full profile data
-if login.profile is None:
-    print("Unable to fetch user data")
-else:
-    user_id = login.profile.user_id
-    num_posts = login.profile.total_post_count
-    num_followers = login.profile.follower_count
-    num_followings = login.profile.following_count
-    is_private = login.profile.is_private
-    bio_len = len(login.profile.biography)
-    full_name = len(login.profile.full_name)
-    is_business = login.profile.is_business_account
-    has_joined_recently = login.profile.is_joined_recently
-    url = login.post.share_url
-print(url)
+import csv
+import pandas as pd
 
+
+profile = login.host.profile("theskagency")
+posts = login.host.posts(username="theskagency", count=35)
+
+arr = []
+
+for this_post in posts:
+    if this_post is None:
+        print("No post found")
+    else:
+        url = this_post.share_url
+        arr.append(url)
+with open('testing.csv', 'w', newline='') as file:
+    writer = csv.writer(file, delimiter = ",", lineterminator='\n')
+    writer.writerow(arr)
+
+df = pd.DataFrame(arr, columns=['urls'])
+
+print(df)
 
